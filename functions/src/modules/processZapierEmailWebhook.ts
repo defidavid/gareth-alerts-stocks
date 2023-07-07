@@ -63,6 +63,7 @@ export const processZapierEmailWebhook = functions.https.onRequest(async (req, r
     } else {
       res.status(422).send("ChatGPT did not respond with a TradeAction");
       logEvent("Message was not actionable", "INFO");
+      return;
     }
 
     res.status(200).send("Webhook processed");
