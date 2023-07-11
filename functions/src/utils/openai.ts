@@ -17,7 +17,7 @@ const EnterAction = z.object({
 
 const ExitAction = z.object({
   type: ExitActionType,
-  exitPrice: z.number(),
+  exitPrice: z.union([z.number(), z.null()]),
   percentGain: z.number(),
   fromAsset: z.string(),
   toAsset: z.string(),
@@ -42,7 +42,8 @@ const openai = new OpenAIApi(configuration);
 export const sendOpenAIRequest = async (body: string) => {
   const resp = await withRetry(async () => {
     return await openai.createChatCompletion({
-      model: "gpt-4",
+      // model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: `${prompt} ${body}` }],
     });
   });
@@ -64,7 +65,7 @@ type EnterAction = {
 };
 type ExitAction = {
   type: ExitActionType;
-  exitPrice: number;
+  exitPrice: number | null;
   percentGain: number;
   fromAsset: string;
   toAsset: string;

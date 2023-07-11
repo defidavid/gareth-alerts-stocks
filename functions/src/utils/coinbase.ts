@@ -166,7 +166,7 @@ const processExitLong = async (tradeAction: ExitAction) => {
 
       const targetPercentGain = tradeAction.percentGain;
       let actualGain;
-      if (avgSellPrice) {
+      if (avgSellPrice && targetPrice) {
         actualGain = (avgSellPrice * (1 + targetPercentGain)) / targetPrice - 1;
       }
 
