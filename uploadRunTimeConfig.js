@@ -1,7 +1,10 @@
 const fs = require("fs");
 const { exec } = require("child_process");
+const path = require("path");
 
-fs.readFile(".runtimeconfig.json", "utf8", (err, data) => {
+const filePath = path.join(__dirname, 'functions/.runtimeconfig.json');
+
+fs.readFile(filePath, "utf8", (err, data) => {
   if (err) {
     console.error("Error reading .runtimeconfig.json:", err);
     return;
@@ -18,7 +21,7 @@ fs.readFile(".runtimeconfig.json", "utf8", (err, data) => {
     }
   }
 
-  console.log("asdfasdf");
+  console.log(commands.join(" && "));
   // exec(commands.join(" && "), (err, stdout, stderr) => {
   //   if (err) {
   //     console.error("Error setting config:", err);

@@ -37,6 +37,6 @@ export const logEvent = async (message: string, level: LogLevel) => {
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    console.log(e.message);
+    console.error(e.message);
   }
 };

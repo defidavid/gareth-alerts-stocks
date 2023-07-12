@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import auth from "basic-auth";
 import { TradeAction, TradeActions, sendOpenAIRequest } from "../utils/openai";
-import { processTradeAction } from "../utils/coinbase";
+import { processTradeAction } from "../utils/alpaca";
 import { logEvent } from "../utils/twillio";
 
 const USERNAME = functions.config().auth.name;
