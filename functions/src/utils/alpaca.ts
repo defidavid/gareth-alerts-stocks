@@ -30,7 +30,7 @@ const listAllAssets = async (): Promise<Asset[]> => {
 
 const getAssetPrice = async (symbol: string) => {
   try {
-    const latestTrade = client.getLatestTrade({ symbol: "asadaadfadf" });
+    const latestTrade = client.getLatestTrade({ symbol });
     return (await latestTrade).trade.p;
   } catch (e: any) {
     throw new Error(`getLatestTrade failed: ${e.message || ""}`);
