@@ -75,13 +75,13 @@ type TradeAction = EnterAction | ExitAction;
 
 Please parse each alert based on these principles:
 * Buy or Add actions: The word "Buy" or "Add to" indicates a purchase or long entry, unless followed by the word "short", which indicates adding to a short position.
-* Sell actions: These are indicated by the word "Sell".
+* Sell actions: These are indicated by the word "Sell" or "Exit".
 Short actions: Indicated by the word "Short". The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
 * Cover actions: These are indicated by the word "Cover” and they translate to ExitShort.
 
 
 Please note the following guidelines for parsing the email alert:
-* Percentages should be represented as decimals
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
 * For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
 * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
 

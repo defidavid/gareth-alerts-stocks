@@ -9,11 +9,13 @@ const theoreticalPortfolioSize = 1_000_000;
 const MAX_PURCHASE_AMOUNT = 20_000;
 const PRICE_WIGGLE_ROOM_PERCENT = 0.005;
 
+const isPaper = functions.config().alpaca.paper === "true";
+
 const client = new AlpacaClient({
   credentials: {
-    key: functions.config().alpaca.key_id,
-    secret: functions.config().alpaca.secret_key,
-    paper: false,
+    key: isPaper ? functions.config().alpaca.paper_key_id : functions.config().alpaca.key_id,
+    secret: isPaper ? functions.config().alpaca.paper_secret_key : functions.config().alpaca.secret_key,
+    paper: isPaper,
   },
   rate_limit: true,
 });
@@ -128,9 +130,9 @@ const processEnterLong = async (tradeAction: EnterAction) => {
         logEvent(
           `${completedOrder ? "Long entry success." : "Long entry pending"}
 asset: ${tradeAction.toAsset}
-originalPurchaseAmount: ${originalPurchaseAmount}
-adjustedPurchaseAmount: ${adjustedPurchaseAmount}
-MAX_PURCHASE_AMOUNT: ${MAX_PURCHASE_AMOUNT}
+originalPurchaseAmount: $${originalPurchaseAmount}
+adjustedPurchaseAmount: $${adjustedPurchaseAmount}
+MAX_PURCHASE_AMOUNT: $${MAX_PURCHASE_AMOUNT}
 currentPrice: $${currentPrice}
 targetPrice: $${targetPrice}
 purchasePrice: $${completedOrder ? completedOrder.filled_avg_price : ""}
@@ -227,7 +229,7 @@ const processEnterShort = async (tradeAction: EnterAction) => {
         const shortedShares = Math.floor(adjustedPurchaseAmount / currentPrice);
         if (shortedShares > 0) {
           const order = await placeOrder({
-            symbol: tradeAction.fromAsset,
+            symbol: tradeAction.toAsset,
             side: "sell",
             type: "market",
             qty: shortedShares,
@@ -296,7 +298,8 @@ const processExitShort = async (tradeAction: ExitAction) => {
 
       if (targetPrice) {
         actualPercentGain = (targetPrice * (1 + targetPercentGain)) / avgPrice - 1;
-        actualGain = (avgPrice * actualPercentGain - avgPrice) * completedOrder.filled_qty;
+        actualGain =
+          avgPrice * completedOrder.filled_qty - avgPrice * (1 - actualPercentGain) * completedOrder.filled_qty;
       }
     }
 
