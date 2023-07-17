@@ -72,6 +72,7 @@ type ExitAction = {
 };
 type TradeAction = EnterAction | ExitAction;
 
+IT IS IMPORTANT TO NOTE THAT IF YOU ARE UNABLE RETURN AN OUTPUT THAT SATISFIES THE TYPES DEFINITIONS ABOVE, YOU SHOULD RETURN AN EMPTY ARRAY. For example, enterPrice CANNOT be null. If you come to the conclusion that enterPrice is null, then you should return an empty array.
 
 Please parse each alert based on these principles:
 * Buy or Add actions: The word "Buy" or "Add to" indicates a purchase or long entry, unless followed by the word "short", which indicates adding to a short position.
