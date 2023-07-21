@@ -8,7 +8,7 @@ type LogLevel = "ERROR" | "INFO" | "WARN";
 
 const sendSMSAlert = async (message: string, level: LogLevel) => {
   const msg = `
-${level}
+STOCKS - ${level}
 
 ${message}
   `;
