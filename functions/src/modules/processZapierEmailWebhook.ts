@@ -6,6 +6,7 @@ import { logEvent } from "../utils/twillio";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
+const entriesDisabled = functions.config().settings.entries_disabled;
 
 interface ZapierWebhook {
   messageId: string;
@@ -59,7 +60,17 @@ export const processZapierEmailWebhook = functions.https.onRequest(async (req, r
     }
 
     if (parsedResp.length) {
-      await Promise.all(parsedResp.map(ta => processTradeAction(ta)));
+      const filtered = parsedResp.filter(resp => {
+        if (entriesDisabled && (resp.type === "EnterLong" || resp.type === "EnterShort")) {
+          return false;
+        }
+        return true;
+      });
+      await Promise.allSettled(filtered.map(ta => processTradeAction(ta)));
+      const diff = parsedResp.length - filtered.length;
+      if (diff) {
+        logEvent(`Entries are disabled at this time. ${diff} amount of entries were skipped`, "WARN");
+      }
     } else {
       res.status(422).send("ChatGPT did not respond with a TradeAction");
       logEvent("Message was not actionable", "INFO");
