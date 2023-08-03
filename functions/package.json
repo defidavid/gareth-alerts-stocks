@@ -8,7 +8,9 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "toggleEntriesOff": "sh -c 'firebase functions:config:set settings.entries_disabled=\"$0\" && firebase deploy --only functions'",
+    "entriesOffStatus": "firebase functions:config:get | grep 'entries_disabled'"
   },
   "engines": {
     "node": "18"
