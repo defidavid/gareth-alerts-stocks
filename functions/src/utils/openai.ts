@@ -43,7 +43,7 @@ export const sendOpenAIRequest = async (body: string) => {
   const resp = await withRetry(async () => {
     return await openai.createChatCompletion({
       // model: "gpt-4",
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-16k",
       messages: [{ role: "user", content: `${prompt} ${body}` }],
     });
   });

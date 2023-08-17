@@ -6,7 +6,8 @@ import { logEvent } from "../utils/twillio";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
-const entriesDisabled = functions.config().settings.entries_disabled;
+// let entriesDisabled = functions.config().settings.entries_disabled;
+const entriesDisabled = false;
 
 interface ZapierWebhook {
   messageId: string;
