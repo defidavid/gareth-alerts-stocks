@@ -320,6 +320,17 @@ actualGain: $${actualGain}
   }
 };
 
+export const cancelOrder = async (orderId: string): Promise<void> => {
+  try {
+    await withRetry(async () => {
+      await client.cancelOrder({ order_id: orderId });
+    });
+    logEvent(`Order with ID ${orderId} has been successfully canceled.`, "INFO");
+  } catch (e: any) {
+    logEvent(`Failed to cancel order with ID ${orderId}. Error: ${e.message || ""}`, "ERROR");
+  }
+};
+
 export const processTradeAction = async (tradeAction: TradeAction) => {
   try {
     if (tradeAction.type === "EnterLong") {
