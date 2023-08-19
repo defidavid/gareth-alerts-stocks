@@ -94,7 +94,7 @@ const getCompletedOrder = async (orderId: string): Promise<Order | undefined> =>
 };
 
 const processEnterLong = async (tradeAction: EnterAction) => {
-  logEvent(`Processing long entry: ${JSON.stringify(tradeAction)}`, "INFO");
+  logEvent(`Processing long entry: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
 
   const allAssets = await listAllAssets();
   const toAsset = allAssets.find(ass => ass.symbol === tradeAction.toAsset);
@@ -154,7 +154,7 @@ purchasePrice: $${completedOrder ? completedOrder.filled_avg_price : ""}
 };
 
 const processExitLong = async (tradeAction: ExitAction) => {
-  logEvent(`Processing long exit: ${JSON.stringify(tradeAction)}`, "INFO");
+  logEvent(`Processing long exit: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
 
   const totalAssetsOnBalanceSheet = await getPosition(tradeAction.fromAsset);
   if (totalAssetsOnBalanceSheet <= 0) {
@@ -205,7 +205,7 @@ actualGain: $${actualGain}
 };
 
 const processEnterShort = async (tradeAction: EnterAction) => {
-  logEvent(`Processing short entry: ${JSON.stringify(tradeAction)}`, "INFO");
+  logEvent(`Processing short entry: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
 
   const allAssets = await listAllAssets();
   const toAsset = allAssets.find(ass => ass.symbol === tradeAction.toAsset);
@@ -269,7 +269,7 @@ purchasePrice: ${completedOrder ? completedOrder.filled_avg_price : ""}
 };
 
 const processExitShort = async (tradeAction: ExitAction) => {
-  logEvent(`Processing short exit: ${JSON.stringify(tradeAction)}`, "INFO");
+  logEvent(`Processing short exit: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
 
   const totalAssetsOnBalanceSheet = await getPosition(tradeAction.fromAsset);
   if (totalAssetsOnBalanceSheet >= 0) {
@@ -331,7 +331,7 @@ export const processTradeAction = async (tradeAction: TradeAction) => {
     } else if (tradeAction.type === "ExitShort") {
       await processExitShort(tradeAction);
     } else {
-      logEvent(`TradeAction not supported: ${JSON.stringify(tradeAction)}`, "WARN");
+      logEvent(`TradeAction not supported: ${JSON.stringify(tradeAction, null, 2)}`, "WARN");
     }
   } catch (e: any) {
     logEvent(e.message, "ERROR");
