@@ -4,15 +4,18 @@ import * as functions from "firebase-functions";
 import { withRetry } from "./withRetry";
 import { truncateDecimals } from "./numbers";
 import { AlpacaClient, Asset, Order, PlaceOrder } from "@master-chief/alpaca";
-import { THEORETICAL_PORTFOLIO_SIZE, PRICE_WIGGLE_ROOM_PERCENT, MAX_PURCHASE_AMOUNT } from "../config";
-
-const isPaper = functions.config().alpaca.paper === "true";
+import {
+  THEORETICAL_PORTFOLIO_SIZE,
+  PRICE_WIGGLE_ROOM_PERCENT,
+  MAX_PURCHASE_AMOUNT,
+  IS_PAPER_TRADING,
+} from "../config";
 
 const client = new AlpacaClient({
   credentials: {
-    key: isPaper ? functions.config().alpaca.paper_key_id : functions.config().alpaca.key_id,
-    secret: isPaper ? functions.config().alpaca.paper_secret_key : functions.config().alpaca.secret_key,
-    paper: isPaper,
+    key: IS_PAPER_TRADING ? functions.config().alpaca.paper_key_id : functions.config().alpaca.key_id,
+    secret: IS_PAPER_TRADING ? functions.config().alpaca.paper_secret_key : functions.config().alpaca.secret_key,
+    paper: IS_PAPER_TRADING,
   },
   rate_limit: true,
 });
