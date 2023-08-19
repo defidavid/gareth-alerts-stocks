@@ -1,0 +1,350 @@
+// EXIT SHORT
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Cover Alert: META @ $277.94 (+7.34%)"
+
+
+// EXIT SHORT
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Cover Alert: DE @ $399.99 (+10.12%)"
+
+
+// EXIT SHORT
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Cover Alert: KBH @ $48.60 (+1.44%) (We are covering Half of our position)"
+
+
+// ENTER SHORT
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Short Alert: CAT $286.71 (1%)"
+
+
+// ENTER SHORT
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Short Alert: JPM (Add) @$156.58 (1.5%)"
+
+
+// ENTER LONG
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Buy Alert: TLT (Add) @ $93.30 (1%)"
+
+
+// ENTER LONG
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Buy Alert: UNG @ $7.24 (1%)"
+
+
+// ENTER LONG
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Buy Alert: TLT (Add) @ $93.30 (1%)"
+
+
+// EXIT LONG
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Sell Alert: SQQQ @ $20.59 (10.17%)"
+
+
+// EXIT LONG
+
+Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
+
+EnterAction = {
+  type: "EnterShort" | "EnterLong";
+  percentOfPortfolio: number;
+  enterPrice: number;
+  fromAsset: string;
+  toAsset: string;
+};
+ExitAction = {
+  type: "ExitShort" | "ExitLong";
+  exitPrice: number | null;
+  percentGain: number;
+  fromAsset: string;
+  toAsset: string;
+};
+TradeAction = EnterAction | ExitAction;
+
+Please parse each alert based on these principles:
+* The word "Buy" or "Add to" indicates EnterLong.
+* The word "Sell" or "Exit" indicates ExitLong.
+* The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+* The word "Cover” indicates ExitShort.
+
+
+Please note the following guidelines for parsing the email alert:
+* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+
+Email Alert: "Master Trader Gareth Soloway: Sell Alert: SOXS @ $10.59 (12.42%)"
+
+

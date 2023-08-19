@@ -4,10 +4,7 @@ import * as functions from "firebase-functions";
 import { withRetry } from "./withRetry";
 import { truncateDecimals } from "./numbers";
 import { AlpacaClient, Asset, Order, PlaceOrder } from "@master-chief/alpaca";
-
-const theoreticalPortfolioSize = 1_000_000;
-const MAX_PURCHASE_AMOUNT = 20_000;
-const PRICE_WIGGLE_ROOM_PERCENT = 0.005;
+import { THEORETICAL_PORTFOLIO_SIZE, PRICE_WIGGLE_ROOM_PERCENT, MAX_PURCHASE_AMOUNT } from "../config";
 
 const isPaper = functions.config().alpaca.paper === "true";
 
@@ -103,7 +100,7 @@ const processEnterLong = async (tradeAction: EnterAction) => {
     const targetPrice = tradeAction.enterPrice;
 
     if (currentPrice <= targetPrice * (1 + PRICE_WIGGLE_ROOM_PERCENT)) {
-      const originalPurchaseAmount = theoreticalPortfolioSize * tradeAction.percentOfPortfolio;
+      const originalPurchaseAmount = THEORETICAL_PORTFOLIO_SIZE * tradeAction.percentOfPortfolio;
 
       const totalFundsAvailable = await getAvailableCash();
 
@@ -214,7 +211,7 @@ const processEnterShort = async (tradeAction: EnterAction) => {
     const targetPrice = tradeAction.enterPrice;
 
     if (currentPrice >= targetPrice * (1 - PRICE_WIGGLE_ROOM_PERCENT)) {
-      const originalPurchaseAmount = theoreticalPortfolioSize * tradeAction.percentOfPortfolio;
+      const originalPurchaseAmount = THEORETICAL_PORTFOLIO_SIZE * tradeAction.percentOfPortfolio;
       const totalFundsAvailable = await getAvailableCash();
 
       let adjustedPurchaseAmount = parseFloat(truncateDecimals(`${originalPurchaseAmount}`, 2));

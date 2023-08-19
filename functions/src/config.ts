@@ -1,0 +1,4 @@
+export const ENTRIES_DISABLED = false;
+export const THEORETICAL_PORTFOLIO_SIZE = 1_000_000;
+export const MAX_PURCHASE_AMOUNT = 20_000;
+export const PRICE_WIGGLE_ROOM_PERCENT = 0.005;

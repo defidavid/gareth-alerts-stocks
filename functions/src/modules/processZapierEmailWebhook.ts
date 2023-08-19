@@ -3,16 +3,57 @@ import auth from "basic-auth";
 import { TradeAction, TradeActions, sendOpenAIRequest } from "../utils/openai";
 import { processTradeAction } from "../utils/alpaca";
 import { logEvent } from "../utils/twillio";
+import { ENTRIES_DISABLED } from "../config";
+import { AccessDenied, ChatGPTNoResponse, InvalidRequest, NonParsableContent } from "../utils/error";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
-// let entriesDisabled = functions.config().settings.entries_disabled;
-const entriesDisabled = false;
 
 interface ZapierWebhook {
   messageId: string;
   body: string;
 }
+
+const parseMessage = async (res: functions.Response, message: string) => {
+  const MAX_ATTEMPTS = 5;
+  let parsedResp: TradeAction[] = [];
+
+  for (let tries = 0; tries < MAX_ATTEMPTS; ++tries) {
+    const gptResp = await sendOpenAIRequest(message);
+    if (!gptResp) {
+      if (tries === MAX_ATTEMPTS - 1) {
+        res.status(500).send("ChatGPT did not respond");
+        throw new ChatGPTNoResponse(message);
+      }
+      continue;
+    }
+
+    let jsonResp;
+    try {
+      jsonResp = JSON.parse(gptResp);
+    } catch (e) {
+      if (tries === MAX_ATTEMPTS - 1) {
+        res.status(500).send("ChatGPT response is not valid JSON");
+        throw new NonParsableContent(gptResp);
+      }
+      continue;
+    }
+
+    try {
+      parsedResp = TradeActions.parse(jsonResp);
+      if (parsedResp.length) {
+        return parsedResp;
+      }
+    } catch (e) {
+      if (tries === MAX_ATTEMPTS - 1) {
+        res.status(500).send("ChatGPT response is not parsable to TradeActions");
+        throw new NonParsableContent(JSON.stringify(jsonResp));
+      }
+    }
+  }
+
+  return parsedResp;
+};
 
 // The Firebase Function
 export const processZapierEmailWebhook = functions.https.onRequest(async (req, res) => {
@@ -38,31 +79,11 @@ export const processZapierEmailWebhook = functions.https.onRequest(async (req, r
 
     logEvent(`Processing message: ${data.body}`, "INFO");
 
-    const gptResp = await sendOpenAIRequest(data.body);
-    if (!gptResp) {
-      res.status(500).send("ChatGPT did not respond");
-      throw new ChatGPTNoResponse(data.body);
-    }
-
-    let jsonResp;
-    try {
-      jsonResp = JSON.parse(gptResp);
-    } catch (e) {
-      res.status(500).send("ChatGPT did not respond with JSON.parseable content");
-      throw new NonParsableContent(gptResp);
-    }
-
-    let parsedResp: TradeAction[] = [];
-    try {
-      parsedResp = TradeActions.parse(jsonResp);
-    } catch (e) {
-      res.status(500).send("ChatGPT did not return TradeActions");
-      throw new NonParsableContent(JSON.stringify(jsonResp));
-    }
+    const parsedResp = await parseMessage(res, data.body);
 
     if (parsedResp.length) {
       const filtered = parsedResp.filter(resp => {
-        if (entriesDisabled && (resp.type === "EnterLong" || resp.type === "EnterShort")) {
+        if (ENTRIES_DISABLED && (resp.type === "EnterLong" || resp.type === "EnterShort")) {
           return false;
         }
         return true;

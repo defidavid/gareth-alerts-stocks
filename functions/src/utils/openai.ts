@@ -44,47 +44,43 @@ export const sendOpenAIRequest = async (body: string) => {
     return await openai.createChatCompletion({
       // model: "gpt-4",
       model: "gpt-3.5-turbo-16k",
-      messages: [{ role: "user", content: `${prompt} ${body}` }],
+      messages: [{ role: "user", content: constructPrompt(body) }],
     });
   });
   return resp.data.choices[0].message?.content;
 };
 
-/* eslint-disable max-len */
-const prompt = `I need you to parse the content of an email alert and output an object of type TradeAction. The output should be in the form of JSON with the type specified as TradeAction[]. If you are unable to parse the messages into the expected format, just respond with an empty array. Your output should be ONLY JSON.  DO NOT OFFER ANY OTHER EXPLANATION OR TEXT OTHER THAN THE JSON OUTPUT -- THIS IS VERY IMPORTANT. Here are the types:
+const constructPrompt = (body: string) => {
+  /* eslint-disable max-len */
+  return `Parse the email alert content and convert it into a JSON object of type TradeAction[]. Return ONLY the JSON output WITHOUT ANY SURROUNDING COMMENTARY OR TEXT. DO NOT return anything other than TradeAction[]. If you cannot parse the message, return an empty array. Use these types:
 
-type EnterActionType = "EnterShort" | "EnterLong";
-type ExitActionType = "ExitShort" | "ExitLong";
-type TradeActionType = ExitActionType | EnterActionType;
-type EnterAction = {
-  type: EnterActionType;
-  percentOfPortfolio: number;
-  enterPrice: number;
-  fromAsset: string;
-  toAsset: string;
+  EnterAction = {
+    type: "EnterShort" | "EnterLong";
+    percentOfPortfolio: number;
+    enterPrice: number;
+    fromAsset: string;
+    toAsset: string;
+  };
+  ExitAction = {
+    type: "ExitShort" | "ExitLong";
+    exitPrice: number | null;
+    percentGain: number;
+    fromAsset: string;
+    toAsset: string;
+  };
+  TradeAction = EnterAction | ExitAction;
+  
+  Please parse each alert based on these principles:
+  * The word "Buy" or "Add to" indicates EnterLong.
+  * The word "Sell" or "Exit" indicates ExitLong.
+  * The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
+  * The word "Cover” indicates ExitShort.
+  
+  
+  Please note the following guidelines for parsing the email alert:
+  * Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
+  * For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
+  * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+  
+  Email Alert: "${body}"`;
 };
-type ExitAction = {
-  type: ExitActionType;
-  exitPrice: number | null;
-  percentGain: number;
-  fromAsset: string;
-  toAsset: string;
-};
-type TradeAction = EnterAction | ExitAction;
-
-IT IS IMPORTANT TO NOTE THAT IF YOU ARE UNABLE RETURN AN OUTPUT THAT SATISFIES THE TYPES DEFINITIONS ABOVE, YOU SHOULD RETURN AN EMPTY ARRAY. For example, enterPrice CANNOT be null. If you come to the conclusion that enterPrice is null, then you should return an empty array.
-
-Please parse each alert based on these principles:
-* Buy or Add actions: The word "Buy" or "Add to" indicates a purchase or long entry, unless followed by the word "short", which indicates adding to a short position.
-* Sell actions: These are indicated by the word "Sell" or "Exit".
-Short actions: Indicated by the word "Short". The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
-* Cover actions: These are indicated by the word "Cover” and they translate to ExitShort.
-
-
-Please note the following guidelines for parsing the email alert:
-* Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
-* For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
-* For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
-
-The email alert content to parse and convert into TradeAction JSON objects are as follows:
-`;
