@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 export class AccessDenied extends Error {
   constructor() {
-    super("Access defined");
+    super("Access denied");
     this.name = "AccessDenied";
   }
 }
