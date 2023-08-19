@@ -1,10 +1,17 @@
 import * as functions from "firebase-functions";
 import auth from "basic-auth";
-import { TradeAction, TradeActions, sendOpenAIRequest } from "../utils/openai";
+import { TradeAction, parseMessage } from "../utils/openai";
 import { processTradeAction } from "../utils/alpaca";
 import { logEvent } from "../utils/twillio";
 import { ENTRIES_DISABLED } from "../config";
-import { AccessDenied, ChatGPTNoResponse, InvalidRequest, NonParsableContent } from "../utils/error";
+import {
+  AccessDenied,
+  ChatGPTNoResponse,
+  InvalidParsedContent,
+  InvalidRequest,
+  NonActionableContent,
+  NonParsableContent,
+} from "../utils/error";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
@@ -13,47 +20,6 @@ interface ZapierWebhook {
   messageId: string;
   body: string;
 }
-
-const parseMessage = async (res: functions.Response, message: string) => {
-  const MAX_ATTEMPTS = 5;
-  let parsedResp: TradeAction[] = [];
-
-  for (let tries = 0; tries < MAX_ATTEMPTS; ++tries) {
-    const gptResp = await sendOpenAIRequest(message);
-    if (!gptResp) {
-      if (tries === MAX_ATTEMPTS - 1) {
-        res.status(500).send("ChatGPT did not respond");
-        throw new ChatGPTNoResponse(message);
-      }
-      continue;
-    }
-
-    let jsonResp;
-    try {
-      jsonResp = JSON.parse(gptResp);
-    } catch (e) {
-      if (tries === MAX_ATTEMPTS - 1) {
-        res.status(500).send("ChatGPT response is not valid JSON");
-        throw new NonParsableContent(gptResp);
-      }
-      continue;
-    }
-
-    try {
-      parsedResp = TradeActions.parse(jsonResp);
-      if (parsedResp.length) {
-        return parsedResp;
-      }
-    } catch (e) {
-      if (tries === MAX_ATTEMPTS - 1) {
-        res.status(500).send("ChatGPT response is not parsable to TradeActions");
-        throw new NonParsableContent(JSON.stringify(jsonResp));
-      }
-    }
-  }
-
-  return parsedResp;
-};
 
 // The Firebase Function
 export const processZapierEmailWebhook = functions.https.onRequest(async (req, res) => {
@@ -79,7 +45,14 @@ export const processZapierEmailWebhook = functions.https.onRequest(async (req, r
 
     logEvent(`Processing message: ${data.body}`, "INFO");
 
-    const parsedResp = await parseMessage(res, data.body);
+    let parsedResp: TradeAction[] = [];
+    try {
+      parsedResp = await parseMessage(data.body);
+    } catch (e) {
+      if (!(e instanceof NonActionableContent)) {
+        throw e;
+      }
+    }
 
     if (parsedResp.length) {
       const filtered = parsedResp.filter(resp => {
@@ -101,6 +74,15 @@ export const processZapierEmailWebhook = functions.https.onRequest(async (req, r
 
     res.status(200).send("Webhook processed");
   } catch (e: any) {
+    if (e instanceof ChatGPTNoResponse) {
+      res.status(500).send("ChatGPT did not respond");
+    } else if (e instanceof NonParsableContent) {
+      res.status(500).send("ChatGPT response is not valid JSON");
+    } else if (e instanceof InvalidParsedContent) {
+      res.status(500).send("ChatGPT did not return TradeActions");
+    } else {
+      res.status(500).send("Server error");
+    }
     logEvent(e.message, "ERROR");
   }
 });

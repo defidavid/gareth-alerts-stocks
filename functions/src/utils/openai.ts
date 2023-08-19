@@ -2,6 +2,7 @@ import { OpenAIApi, Configuration } from "openai";
 import z from "zod";
 import * as functions from "firebase-functions";
 import { withRetry } from "./withRetry";
+import { ChatGPTNoResponse, InvalidParsedContent, NonActionableContent, NonParsableContent } from "./error";
 
 const EnterActionType = z.union([z.literal("EnterShort"), z.literal("EnterLong")]);
 const ExitActionType = z.union([z.literal("ExitShort"), z.literal("ExitLong")]);
@@ -83,4 +84,37 @@ const constructPrompt = (body: string) => {
   * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
   
   Email Alert: "${body}"`;
+};
+
+export const parseMessage = async (message: string) => {
+  return withRetry(
+    async () => {
+      const gptResp = await sendOpenAIRequest(message);
+      if (!gptResp) {
+        throw new ChatGPTNoResponse(message);
+      }
+
+      let jsonResp;
+      try {
+        jsonResp = JSON.parse(gptResp);
+      } catch (e) {
+        throw new NonParsableContent(gptResp);
+      }
+
+      let parsedResp: TradeAction[] = [];
+      try {
+        parsedResp = TradeActions.parse(jsonResp);
+      } catch (e) {
+        throw new InvalidParsedContent(JSON.stringify(jsonResp));
+      }
+
+      if (parsedResp.length) {
+        return parsedResp;
+      } else {
+        throw new NonActionableContent(gptResp);
+      }
+    },
+    7,
+    200,
+  );
 };

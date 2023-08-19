@@ -33,3 +33,10 @@ export class InvalidParsedContent extends Error {
     this.name = "InvalidParsedContent";
   }
 }
+
+export class NonActionableContent extends Error {
+  constructor(content: string) {
+    super(`Content was not actionable: ${content}`);
+    this.name = "NonActionableContent";
+  }
+}
