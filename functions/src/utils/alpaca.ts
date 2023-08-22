@@ -181,7 +181,7 @@ const processExitLong = async (tradeAction: ExitAction) => {
       avgSellPrice = completedOrder.filled_avg_price;
       totalSold = completedOrder.filled_qty * completedOrder.filled_avg_price;
 
-      if (targetPrice) {
+      if (targetPrice && targetPercentGain) {
         actualPercentGain = (avgSellPrice * (1 + targetPercentGain)) / targetPrice - 1;
         actualGain = totalSold - totalSold / (1 + actualPercentGain);
       }
@@ -296,7 +296,7 @@ const processExitShort = async (tradeAction: ExitAction) => {
       avgPrice = completedOrder.filled_avg_price;
       totalExited = completedOrder.filled_qty * completedOrder.filled_avg_price;
 
-      if (targetPrice) {
+      if (targetPrice && targetPercentGain) {
         actualPercentGain = (targetPrice * (1 + targetPercentGain)) / avgPrice - 1;
         actualGain =
           avgPrice * completedOrder.filled_qty - avgPrice * (1 - actualPercentGain) * completedOrder.filled_qty;

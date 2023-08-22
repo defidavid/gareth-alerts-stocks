@@ -19,7 +19,7 @@ const EnterAction = z.object({
 const ExitAction = z.object({
   type: ExitActionType,
   exitPrice: z.union([z.number(), z.null()]),
-  percentGain: z.number(),
+  percentGain: z.union([z.number(), z.null()]),
   fromAsset: z.string(),
   toAsset: z.string(),
 });
@@ -65,7 +65,7 @@ const constructPrompt = (body: string) => {
   ExitAction = {
     type: "ExitShort" | "ExitLong";
     exitPrice: number | null;
-    percentGain: number;
+    percentGain: number | null;
     fromAsset: string;
     toAsset: string;
   };
@@ -76,7 +76,6 @@ const constructPrompt = (body: string) => {
   * The word "Sell" or "Exit" indicates ExitLong.
   * The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
   * The word "Cover” indicates ExitShort.
-  
   
   Please note the following guidelines for parsing the email alert:
   * Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
