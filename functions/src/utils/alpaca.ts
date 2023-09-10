@@ -32,10 +32,23 @@ const listAllAssets = async (): Promise<Asset[]> => {
 
 const getAssetPrice = async (symbol: string) => {
   try {
-    const latestTrade = client.getLatestTrade({ symbol });
-    return (await latestTrade).trade.p;
+    const latestTrade = await withRetry(async () => {
+      return client.getLatestTrade({ symbol });
+    });
+    return latestTrade.trade.p;
   } catch (e: any) {
     throw new Error(`getLatestTrade failed: ${e.message || ""}`);
+  }
+};
+
+const getAsset = async (symbol: string) => {
+  try {
+    const asset = await withRetry(async () => {
+      return client.getAsset({ asset_id_or_symbol: symbol });
+    });
+    return asset;
+  } catch (e: any) {
+    throw new Error(`getAsset failed: ${e.message || ""}`);
   }
 };
 
@@ -116,13 +129,30 @@ const processEnterLong = async (tradeAction: EnterAction) => {
           adjustedPurchaseAmount = MAX_PURCHASE_AMOUNT;
         }
 
-        const order = await placeOrder({
-          symbol: tradeAction.toAsset,
-          side: "buy",
-          type: "market",
-          notional: adjustedPurchaseAmount,
-          time_in_force: "day",
-        });
+        // Get asset details to check if it's fractionable
+        const assetDetails = await getAsset(tradeAction.toAsset);
+
+        let newOrder: PlaceOrder;
+        if (assetDetails.fractionable) {
+          newOrder = {
+            symbol: tradeAction.toAsset,
+            side: "buy",
+            type: "market",
+            notional: adjustedPurchaseAmount,
+            time_in_force: "day",
+          };
+        } else {
+          const quantity = Math.floor(adjustedPurchaseAmount / currentPrice);
+          newOrder = {
+            symbol: tradeAction.toAsset,
+            side: "buy",
+            type: "market",
+            qty: quantity,
+            time_in_force: "day",
+          };
+        }
+
+        const order = await placeOrder(newOrder);
 
         const completedOrder = await getCompletedOrder(order.id);
 
