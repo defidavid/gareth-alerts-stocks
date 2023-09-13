@@ -171,7 +171,16 @@ purchasePrice: $${completedOrder ? completedOrder.filled_avg_price : ""}
         );
         /* eslint-enable indent */
       } else {
-        logEvent("No more funds available :(", "ERROR");
+        /* eslint-disable indent */
+        logEvent(
+          `No more funds available :(
+originalPurchaseAmount: ${originalPurchaseAmount}
+adjustedPurchaseAmount: ${adjustedPurchaseAmount}
+totalFundsAvailable: ${totalFundsAvailable}
+            `,
+          "ERROR",
+        );
+        /* eslint-enable indent */
       }
     } else {
       logEvent(`Long entry price out of range. currentPrice: ${currentPrice}, targetPrice: ${targetPrice}`, "ERROR");
@@ -290,7 +299,16 @@ purchasePrice: ${completedOrder ? completedOrder.filled_avg_price : ""}
           logEvent("No enough funds to short a single share :(", "ERROR");
         }
       } else {
-        logEvent("No more funds available :(", "ERROR");
+        /* eslint-disable indent */
+        logEvent(
+          `No more funds available :(
+originalPurchaseAmount: ${originalPurchaseAmount}
+adjustedPurchaseAmount: ${adjustedPurchaseAmount}
+totalFundsAvailable: ${totalFundsAvailable}
+                    `,
+          "ERROR",
+        );
+        /* eslint-enable indent */
       }
     } else {
       logEvent(`Short entry price out of range. currentPrice: ${currentPrice}, targetPrice: ${targetPrice}`, "ERROR");

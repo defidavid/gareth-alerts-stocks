@@ -10,8 +10,8 @@ const ExitActionType = z.union([z.literal("ExitShort"), z.literal("ExitLong")]);
 
 const EnterAction = z.object({
   type: EnterActionType,
-  percentOfPortfolio: z.number(),
-  enterPrice: z.number(),
+  percentOfPortfolio: z.number().gt(0),
+  enterPrice: z.number().gt(0),
   fromAsset: z.string(),
   toAsset: z.string(),
 });
@@ -104,7 +104,7 @@ export const parseMessage = async (message: string) => {
       try {
         parsedResp = TradeActions.parse(jsonResp);
       } catch (e) {
-        throw new InvalidParsedContent(JSON.stringify(jsonResp));
+        throw new InvalidParsedContent(JSON.stringify(jsonResp, null, 2));
       }
 
       if (parsedResp.length) {
