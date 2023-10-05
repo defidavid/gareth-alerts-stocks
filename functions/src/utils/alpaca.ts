@@ -9,6 +9,7 @@ import {
   PRICE_WIGGLE_ROOM_PERCENT,
   MAX_PURCHASE_AMOUNT,
   IS_PAPER_TRADING,
+  EXIT_BLACK_LIST,
 } from "../config";
 
 const client = new AlpacaClient({
@@ -195,6 +196,11 @@ totalFundsAvailable: ${totalFundsAvailable}
 const processExitLong = async (tradeAction: ExitAction) => {
   logEvent(`Processing long exit: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
 
+  if (EXIT_BLACK_LIST.includes(tradeAction.fromAsset)) {
+    logEvent(`${tradeAction.fromAsset} is on the exit blacklist: ${EXIT_BLACK_LIST.join(",")}`, "WARN");
+    return;
+  }
+
   const totalAssetsOnBalanceSheet = await getPosition(tradeAction.fromAsset);
   if (totalAssetsOnBalanceSheet <= 0) {
     logEvent(`Balance for ${tradeAction.fromAsset} is 0`, "ERROR");
@@ -318,6 +324,11 @@ totalFundsAvailable: ${totalFundsAvailable}
 
 const processExitShort = async (tradeAction: ExitAction) => {
   logEvent(`Processing short exit: ${JSON.stringify(tradeAction, null, 2)}`, "INFO");
+
+  if (EXIT_BLACK_LIST.includes(tradeAction.fromAsset)) {
+    logEvent(`${tradeAction.fromAsset} is on the exit blacklist: ${EXIT_BLACK_LIST.join(",")}`, "WARN");
+    return;
+  }
 
   const totalAssetsOnBalanceSheet = await getPosition(tradeAction.fromAsset);
   if (totalAssetsOnBalanceSheet >= 0) {
