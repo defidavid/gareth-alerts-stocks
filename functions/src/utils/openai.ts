@@ -43,8 +43,8 @@ const openai = new OpenAIApi(configuration);
 export const sendOpenAIRequest = async (body: string) => {
   const resp = await withRetry(async () => {
     return await openai.createChatCompletion({
-      // model: "gpt-4",
-      model: "gpt-3.5-turbo-16k",
+      model: "gpt-4",
+      // model: "gpt-3.5-turbo-16k",
       messages: [{ role: "user", content: constructPrompt(body) }],
     });
   });
@@ -103,6 +103,13 @@ export const parseMessage = async (message: string) => {
       let parsedResp: TradeAction[] = [];
       try {
         parsedResp = TradeActions.parse(jsonResp);
+        parsedResp = parsedResp.map(tradeAction => {
+          return {
+            ...tradeAction,
+            toAsset: tradeAction.toAsset.toUpperCase(),
+            fromAsset: tradeAction.fromAsset.toUpperCase(),
+          };
+        });
       } catch (e) {
         throw new InvalidParsedContent(JSON.stringify(jsonResp, null, 2));
       }
