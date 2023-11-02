@@ -83,7 +83,7 @@ const constructPrompt = (body: string) => {
   * Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
   * For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
   * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
-  * For all ExitLong and  ExitShort trades, specify how much of the position we are exiting. The number should be a decimal representing a percentage. If you are not able to determine this based on the email content, assume the value to be: 1.0.
+  * For all ExitLong and ExitShort trades, specify how much of the position we are exiting. The number should be a decimal representing a percentage. If you are not able to determine this based on the email content, assume the value to be: 1.0.
   
   Email Alert: "${body}"`;
 };
