@@ -205,11 +205,15 @@ const processExitLong = async (tradeAction: ExitAction) => {
   if (totalAssetsOnBalanceSheet <= 0) {
     logEvent(`Balance for ${tradeAction.fromAsset} is 0`, "ERROR");
   } else {
+    const percentageToSell = tradeAction.percentageOfPosition || 1;
+    const totalToBeSold = Math.floor(totalAssetsOnBalanceSheet * percentageToSell);
+    const qty = totalToBeSold > 0 ? totalToBeSold : totalAssetsOnBalanceSheet;
+
     const order = await placeOrder({
       symbol: tradeAction.fromAsset,
       side: "sell",
       type: "market",
-      qty: totalAssetsOnBalanceSheet,
+      qty,
       time_in_force: "day",
     });
 
@@ -235,7 +239,8 @@ const processExitLong = async (tradeAction: ExitAction) => {
     /* eslint-disable indent */
     logEvent(
       `${completedOrder ? "Long exit success." : "Long exit pending"}
-sellAmount: ${totalAssetsOnBalanceSheet} ${tradeAction.fromAsset}
+sellAmount: ${qty} ${tradeAction.fromAsset}
+totalAssetsOnBalanceSheet: ${totalAssetsOnBalanceSheet} ${tradeAction.fromAsset}
 targetPrice: $${targetPrice}
 avgSellPrice: $${avgSellPrice}
 targetPercentGain: ${targetPercentGain}
@@ -334,12 +339,17 @@ const processExitShort = async (tradeAction: ExitAction) => {
   if (totalAssetsOnBalanceSheet >= 0) {
     logEvent(`Balance for ${tradeAction.fromAsset} is 0 or positive, indicating no short position`, "ERROR");
   } else {
+    const percentageToSell = tradeAction.percentageOfPosition || 1;
+    const totalToBeSold = Math.floor(totalAssetsOnBalanceSheet * percentageToSell);
+    const totalAssetsOnBalanceSheetForSell = Math.floor(totalAssetsOnBalanceSheet);
+    const qty = Math.abs(totalToBeSold || totalAssetsOnBalanceSheetForSell);
+
     const order = await placeOrder({
       symbol: tradeAction.fromAsset,
       side: "buy",
       type: "market",
       // absolute value to convert the negative quantity to positive
-      qty: Math.abs(Math.floor(totalAssetsOnBalanceSheet)),
+      qty,
       time_in_force: "day",
     });
 
@@ -365,7 +375,8 @@ const processExitShort = async (tradeAction: ExitAction) => {
     /* eslint-disable indent */
     logEvent(
       `${completedOrder ? "Short exit success." : "Short exit pending"}
-exitAmount: ${Math.abs(Math.floor(totalAssetsOnBalanceSheet))} ${tradeAction.fromAsset}
+exitAmount: ${qty} ${tradeAction.fromAsset}
+totalAssetsOnBalanceSheet: ${totalAssetsOnBalanceSheetForSell} ${tradeAction.fromAsset}
 targetPrice: $${targetPrice}
 avgPrice: $${avgPrice}
 targetPercentGain: ${targetPercentGain}

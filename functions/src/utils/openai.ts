@@ -19,6 +19,7 @@ const EnterAction = z.object({
 const ExitAction = z.object({
   type: ExitActionType,
   exitPrice: z.union([z.number(), z.null()]),
+  percentageOfPosition: z.union([z.number().gt(0), z.null()]),
   percentGain: z.union([z.number(), z.null()]),
   fromAsset: z.string(),
   toAsset: z.string(),
@@ -65,6 +66,7 @@ const constructPrompt = (body: string) => {
   ExitAction = {
     type: "ExitShort" | "ExitLong";
     exitPrice: number | null;
+    percentageOfPosition: number | null;
     percentGain: number | null;
     fromAsset: string;
     toAsset: string;
@@ -81,6 +83,7 @@ const constructPrompt = (body: string) => {
   * Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
   * For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
   * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
+  * For all ExitLong and  ExitShort trades, specify how much of the position we are exiting. The number should be a decimal representing a position. If you are not able to determine this based on the email content, assume the value to be: 1.
   
   Email Alert: "${body}"`;
 };
