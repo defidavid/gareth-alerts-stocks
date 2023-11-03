@@ -205,8 +205,11 @@ const processExitLong = async (tradeAction: ExitAction) => {
   if (totalAssetsOnBalanceSheet <= 0) {
     logEvent(`Balance for ${tradeAction.fromAsset} is 0`, "ERROR");
   } else {
+    const assetDetails = await getAsset(tradeAction.fromAsset);
     const percentageToSell = tradeAction.percentageOfPosition || 1;
-    const totalToBeSold = Math.floor(totalAssetsOnBalanceSheet * percentageToSell);
+    const totalToBeSold = assetDetails.fractionable
+      ? totalAssetsOnBalanceSheet * percentageToSell
+      : Math.floor(totalAssetsOnBalanceSheet * percentageToSell);
     const qty = totalToBeSold > 0 ? totalToBeSold : totalAssetsOnBalanceSheet;
 
     const order = await placeOrder({
