@@ -162,7 +162,7 @@ const processEnterLong = async (tradeAction: EnterAction) => {
           `${completedOrder ? "Long entry success." : "Long entry pending"}
 asset: ${tradeAction.toAsset}
 originalPurchaseAmount: $${originalPurchaseAmount}
-adjustedPurchaseAmount: $${adjustedPurchaseAmount}
+actualPurchaseAmount: $${completedOrder ? completedOrder.filled_avg_price * completedOrder.filled_qty : ""}
 MAX_PURCHASE_AMOUNT: $${MAX_PURCHASE_AMOUNT}
 currentPrice: $${currentPrice}
 targetPrice: $${targetPrice}
