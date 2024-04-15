@@ -19,6 +19,7 @@ const PASSWORD = functions.config().auth.pass;
 interface ZapierWebhook {
   messageId: string;
   body: string;
+  subject: string;
 }
 
 // The Firebase Function
@@ -40,16 +41,17 @@ export const processZapierEmailWebhook = functions
       }
 
       const data: ZapierWebhook = req.body;
-      if (!data.messageId || !data.body) {
-        res.status(400).send("Invalid request. Missing messageId or body");
-        throw new InvalidRequest(data.messageId, data.body);
+      if (!data.messageId || !data.body || !data.subject) {
+        res.status(400).send("Invalid request. Missing messageId, subject, or body");
+        throw new InvalidRequest(data.messageId, `${data.subject}: ${data.body}`);
       }
 
-      logEvent(`Processing message: ${data.body}`, "INFO");
+      const alert = `${data.subject}: ${data.body}`;
+      logEvent(`Processing message: ${alert}`, "INFO");
 
       let parsedResp: TradeAction[] = [];
       try {
-        parsedResp = await parseMessage(data.body);
+        parsedResp = await parseMessage(alert);
       } catch (e) {
         if (!(e instanceof NonActionableContent)) {
           throw e;
