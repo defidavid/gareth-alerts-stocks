@@ -6,7 +6,6 @@ import { ChatGPTNoResponse, InvalidParsedContent, NonActionableContent, NonParsa
 
 const EnterActionType = z.union([z.literal("EnterShort"), z.literal("EnterLong")]);
 const ExitActionType = z.union([z.literal("ExitShort"), z.literal("ExitLong")]);
-// const TradeActionType = z.union([EnterActionType, ExitActionType]);
 
 const EnterAction = z.object({
   type: EnterActionType,
@@ -29,9 +28,6 @@ export const TradeAction = z.union([EnterAction, ExitAction]);
 export const TradeActions = z.array(TradeAction);
 
 // Extract static types
-// type EnterActionTypeStatic = z.infer<typeof EnterActionType>;
-// type ExitActionTypeStatic = z.infer<typeof ExitActionType>;
-// type TradeActionTypeStatic = z.infer<typeof TradeActionType>;
 export type EnterAction = z.infer<typeof EnterAction>;
 export type ExitAction = z.infer<typeof ExitAction>;
 export type TradeAction = z.infer<typeof TradeAction>;
@@ -45,7 +41,6 @@ export const sendOpenAIRequest = async (body: string) => {
   const resp = await withRetry(async () => {
     return await openai.createChatCompletion({
       model: "gpt-4",
-      // model: "gpt-3.5-turbo-16k",
       messages: [{ role: "user", content: constructPrompt(body) }],
     });
   });
@@ -72,19 +67,23 @@ const constructPrompt = (body: string) => {
     toAsset: string;
   };
   TradeAction = EnterAction | ExitAction;
-  
+
   Please parse each alert based on these principles:
   * The word "Buy" or "Add to" indicates EnterLong.
   * The word "Sell" or "Exit" indicates ExitLong.
   * The word "Short" indicates EnterShort. The asset/currency pair following this word should be split with the base currency as fromAsset and quote currency as toAsset.
   * The word "Cover” indicates ExitShort.
-  
+
   Please note the following guidelines for parsing the email alert:
   * Percentages should be represented as decimals. For example, when parsing the string "-0.07%", it should translate to the number, -0.0007.
   * For all EnterLong and EnterShort trades, the fromAsset is USD and the toAsset is the asset being purchased or shorted
   * For all ExitLong and ExitShort trades, the fromAsset is the asset being sold or covered and the toAsset is USD
   * For all ExitLong and ExitShort trades, specify how much of the position we are exiting. The number should be a decimal representing a percentage. If you are not able to determine this based on the email content, assume the value to be: 1.0.
-  
+  * Messages that indicate an ExitAction will often have both an Entry and an Exit specified. The former indicating the average purchase price of what is being exited and can be ignored. The latter is the exit price that just took place.
+  * Messages that indicate an EnterAction will often specify an Average which indicates the average entry price from previous EnterAction orders in addition to the current one being described. This can be ignored.
+  * Some messages will indicate a Stop. This can be ignored.
+  * Some messages will indicate a Target. This can be ignored.
+
   Email Alert: "${body}"`;
 };
 
