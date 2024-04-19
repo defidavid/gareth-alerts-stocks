@@ -56,6 +56,7 @@ export const processZapierEmailWebhook = functions
         parsedResp = await parseMessage(alert);
       } catch (e) {
         if (!(e instanceof NonActionableContent)) {
+          console.error("Error parsing message", e);
           throw e;
         }
       }
@@ -67,7 +68,12 @@ export const processZapierEmailWebhook = functions
           }
           return true;
         });
-        await Promise.allSettled(filtered.map(ta => processTradeAction(ta)));
+        await Promise.allSettled(
+          filtered.map(ta => {
+            logEvent(`Processing trade action: ${JSON.stringify(ta, null, 2)}`, "INFO");
+            processTradeAction(ta);
+          }),
+        );
         const diff = parsedResp.length - filtered.length;
         if (diff) {
           logEvent(`Entries are disabled at this time. ${diff} amount of entries were skipped`, "WARN");
@@ -89,6 +95,7 @@ export const processZapierEmailWebhook = functions
       } else {
         res.status(500).send("Server error");
       }
+      console.error("Unknown error", e);
       logEvent(e.message, "ERROR");
     }
   });

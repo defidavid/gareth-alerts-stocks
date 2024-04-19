@@ -84,7 +84,9 @@ const constructPrompt = (body: string) => {
   * Some messages will indicate a Stop. This can be ignored.
   * Some messages will indicate a Target. This can be ignored.
 
-  Email Alert: "${body}"`;
+  Email Alert:
+  
+  "${body}"`;
 };
 
 export const parseMessage = async (message: string) => {
@@ -92,6 +94,7 @@ export const parseMessage = async (message: string) => {
     async () => {
       const gptResp = await sendOpenAIRequest(message);
       if (!gptResp) {
+        console.error("ChatGPTNoResponse", message);
         throw new ChatGPTNoResponse(message);
       }
 
@@ -99,6 +102,7 @@ export const parseMessage = async (message: string) => {
       try {
         jsonResp = JSON.parse(gptResp);
       } catch (e) {
+        console.error("NonParsableContent", gptResp);
         throw new NonParsableContent(gptResp);
       }
 
@@ -113,12 +117,14 @@ export const parseMessage = async (message: string) => {
           };
         });
       } catch (e) {
+        console.error("InvalidParsedContent", JSON.stringify(jsonResp, null, 2));
         throw new InvalidParsedContent(JSON.stringify(jsonResp, null, 2));
       }
 
       if (parsedResp.length) {
         return parsedResp;
       } else {
+        console.error("NonActionableContent", gptResp);
         throw new NonActionableContent(gptResp);
       }
     },
