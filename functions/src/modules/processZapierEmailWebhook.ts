@@ -12,6 +12,7 @@ import {
   NonActionableContent,
   NonParsableContent,
 } from "../utils/error";
+import { stripURLs } from "src/utils/string";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
@@ -46,7 +47,8 @@ export const processZapierEmailWebhook = functions
         throw new InvalidRequest(data.messageId, `${data.subject}: ${data.body}`);
       }
 
-      const alert = `${data.subject}: ${data.body}`;
+      const body = stripURLs(data.body);
+      const alert = `${data.subject}: ${body}`;
       logEvent(`Processing message: ${alert}`, "INFO");
 
       let parsedResp: TradeAction[] = [];

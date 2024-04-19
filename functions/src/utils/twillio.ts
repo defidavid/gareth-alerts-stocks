@@ -41,7 +41,7 @@ export const logEvent = async (message: string, level: LogLevel) => {
         msg = msgArray[0];
       }
     }
-    await sendSMSAlert(msg, level);
+    await sendSMSAlert(msg.substring(0, 1599), level);
     // eslint-disable-next-line no-empty
   } catch (e) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
