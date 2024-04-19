@@ -12,7 +12,7 @@ import {
   NonActionableContent,
   NonParsableContent,
 } from "../utils/error";
-import { stripURLs } from "src/utils/string";
+import { stripURLs } from "../utils/string";
 
 const USERNAME = functions.config().auth.name;
 const PASSWORD = functions.config().auth.pass;
