@@ -49,7 +49,7 @@ export const processZapierEmailWebhook = functions
 
       const body = stripURLs(data.body);
       const alert = `${data.subject}: ${body}`;
-      logEvent(`Processing message: ${alert}`, "INFO");
+      // logEvent(`Processing message: ${alert}`, "INFO");
 
       let parsedResp: TradeAction[] = [];
       try {
@@ -80,7 +80,7 @@ export const processZapierEmailWebhook = functions
         }
       } else {
         res.status(422).send("ChatGPT did not respond with a TradeAction");
-        logEvent("Message was not actionable", "INFO");
+        // logEvent("Message was not actionable", "INFO");
         return;
       }
 
