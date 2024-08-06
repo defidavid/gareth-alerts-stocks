@@ -108,7 +108,7 @@ const getCompletedOrder = async (orderId: string): Promise<Order | undefined> =>
 };
 
 const processEnterLong = async (tradeAction: EnterAction) => {
-  logEvent("Processing long entry", "INFO");
+  // logEvent("Processing long entry", "INFO");
 
   const allAssets = await listAllAssets();
   const toAsset = allAssets.find(ass => ass.symbol === tradeAction.toAsset);
@@ -194,7 +194,7 @@ totalFundsAvailable: ${totalFundsAvailable}
 };
 
 const processExitLong = async (tradeAction: ExitAction) => {
-  logEvent("Processing long exit", "INFO");
+  // logEvent("Processing long exit", "INFO");
 
   if (EXIT_BLACK_LIST.includes(tradeAction.fromAsset)) {
     logEvent(`${tradeAction.fromAsset} is on the exit blacklist: ${EXIT_BLACK_LIST.join(",")}`, "WARN");
@@ -258,7 +258,7 @@ actualGain: $${actualGain}
 };
 
 const processEnterShort = async (tradeAction: EnterAction) => {
-  logEvent("Processing short entry", "INFO");
+  // logEvent("Processing short entry", "INFO");
 
   const allAssets = await listAllAssets();
   const toAsset = allAssets.find(ass => ass.symbol === tradeAction.toAsset);
@@ -331,7 +331,7 @@ totalFundsAvailable: ${totalFundsAvailable}
 };
 
 const processExitShort = async (tradeAction: ExitAction) => {
-  logEvent("Processing short exit", "INFO");
+  // logEvent("Processing short exit", "INFO");
 
   if (EXIT_BLACK_LIST.includes(tradeAction.fromAsset)) {
     logEvent(`${tradeAction.fromAsset} is on the exit blacklist: ${EXIT_BLACK_LIST.join(",")}`, "WARN");
