@@ -167,6 +167,7 @@ MAX_PURCHASE_AMOUNT: $${MAX_PURCHASE_AMOUNT}
 currentPrice: $${currentPrice}
 targetPrice: $${targetPrice}
 purchasePrice: $${completedOrder ? completedOrder.filled_avg_price : ""}
+spread: ${completedOrder ? (completedOrder.filled_avg_price / targetPrice - 1) * 100 : ""}%
 `,
           "INFO",
         );
@@ -250,6 +251,7 @@ targetPercentGain: ${targetPercentGain}
 actualPercentGain: ${actualPercentGain}
 totalSold: $${totalSold}
 actualGain: $${actualGain}
+spread: ${avgSellPrice && targetPrice ? (avgSellPrice / targetPrice - 1) * 100 : ""}%
 `,
       "INFO",
     );
@@ -305,6 +307,7 @@ shortedShares: ${shortedShares}
 currentPrice: ${currentPrice}
 targetPrice: ${targetPrice}
 purchasePrice: ${completedOrder ? completedOrder.filled_avg_price : ""}
+spread: ${completedOrder ? (completedOrder.filled_avg_price / targetPrice - 1) * 100 : ""}%
 `,
             "INFO",
           );
@@ -386,6 +389,7 @@ targetPercentGain: ${targetPercentGain}
 actualPercentGain: ${actualPercentGain}
 totalExited: $${totalExited}
 actualGain: $${actualGain}
+spread: ${avgPrice && targetPrice ? (avgPrice / targetPrice - 1) * 100 : ""}%
 `,
       "INFO",
     );
