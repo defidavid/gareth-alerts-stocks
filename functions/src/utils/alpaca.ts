@@ -68,7 +68,7 @@ const getPosition = async (symbol: string) => {
 const placeOrder = async (newOrder: PlaceOrder) => {
   try {
     return withRetry(async () => {
-      return await client.placeOrder({ ...newOrder, extended_hours: true });
+      return await client.placeOrder({ ...newOrder, extended_hours: false });
     });
   } catch (e: any) {
     throw new Error(`placeOrder failed: ${e.message || ""}`);
